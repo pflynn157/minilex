@@ -1,12 +1,15 @@
 
-"mov" = Mov
-"int" = Int
-"syscall" = Syscall
-"ret" = Ret
+"func" = Func
+"is" = Is
+"end" = End
+"var" = Var
+"return" = Return
 
-',' = Comma
+';' = SemiColon
+'=' = Assign
 ':' = Colon
-'.' = Dot
+':=' = Assign2
 
-@comment_line = ;
-
+@comment_line = #
+@comment_line = //
+@comment_block /* */

@@ -1,13 +1,15 @@
-.data
+// This is also a comment
+func main is
+    var x = 20;
+    var y = "Hello!";
+    var z = x;
+    var xx : int := 32;
+    return z;
+    
+    # This is a comment
+end
 
-.text
+;
 
-; Comment 2
-
-_start:
-    mov eax, 5
-    mov ebx, 20
-    int 0x20
-    syscall
-    ret ; Comment1
+!! Another comment
 

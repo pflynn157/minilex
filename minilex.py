@@ -1,17 +1,19 @@
-#!/usr/bin/python3
+#!/bin/env python3
 import sys
 import os
 
+import config
+
 # Command line arguments
-base_path = "./base"
-output_path = "./src"
+base_path = config.base_path
+output_path = config.output_path
 input_file = ""
 
 # Prints the help text
 def help():
 	print("minilex - The simple lexical generator")
 	print("")
-	print("Usage: minilex FILE [base path] [output path]")
+	print("Usage: minilex FILE [output path] [base path]")
 	print("")
 	print("Defaults: minilex FILE ./base ./src")
 	print("")
@@ -25,9 +27,9 @@ if len(sys.argv) == 1:
 input_file = sys.argv[1]
 
 if len(sys.argv) >= 3:
-	base_path = sys.argv[2]
+	output_path = sys.argv[2]
 if len(sys.argv) >= 4:
-	output_path = sys.argv[3]
+	base_path = sys.argv[3]
 
 # Init the needed maps
 keywords = dict()
