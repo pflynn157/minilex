@@ -33,6 +33,7 @@ if len(sys.argv) >= 4:
 keywords = dict()
 symbols = dict()
 comments = list()
+multi_comments = list()
 
 ##
 ## The symbol map has a structure like this:
@@ -73,6 +74,11 @@ def parseLine(line):
 			symbols[key] = [(value, name)]
 	elif value == "@comment_line":
 		comments.append(name)
+	elif value == "@comment_block":
+	    name = name.split(" ")
+	    start = name[0]
+	    end = name[1]
+	    multi_comments.append((start, end))
 
 # Read the file line by line
 with open(input_file, "r") as reader:
@@ -212,6 +218,69 @@ for line in reader.readlines():
 					
 				# Unget the characters in case we don't have a comment
 				for i in range(1, len(symbol)):
+					printSpace(writer, 8)
+					writer.write("reader.unget();\n")
+					
+	elif line2 == "//##TOKEN COMMENT_MULTI":
+		found_first = False
+		for pair in multi_comments:
+			start = pair[0]
+			end = pair[1]
+			
+			printSpace(writer, 8)
+			if found_first:
+				writer.write("__next1 = \"\";\n")
+			else:
+				writer.write("std::string __next1 = \"\";\n")
+				found_first = True
+			printSpace(writer, 8)
+			writer.write("__next1 += next;\n")
+			
+			# If the multi line comment has more than one character, get the extra characters
+			if len(start) > 1:
+				for i in range(1, len(start)):
+					printSpace(writer, 8)
+					writer.write("__next1 += reader.get();\n")
+				
+				printSpace(writer, 8)
+				writer.write("if (reader.eof()) {\n")
+				printSpace(writer, 12)
+				writer.write("token.type = Eof;\n")
+				printSpace(writer, 12)
+				writer.write("break;\n")
+				printSpace(writer, 8)
+				writer.write("}\n")
+				
+			# Now, build the conditional, and consume characters until we're at the end
+			printSpace(writer, 8)
+			writer.write("if (__next1 == \"" + start + "\") {\n")
+			
+			printSpace(writer, 12)
+			writer.write("while (!reader.eof()) {\n")
+			
+			printSpace(writer, 16)
+			writer.write("char __c = reader.get();\n")
+			printSpace(writer, 16)
+			writer.write("if (__c == \'" + end[0] + "\' ")
+			for i in range(1, len(end)):
+				writer.write("&& reader.get() == \'" + end[i] + "\' ")
+			writer.write(") {\n")
+			
+			printSpace(writer, 20)
+			writer.write("break;\n")
+			printSpace(writer, 16)
+			writer.write("}\n")
+			
+			printSpace(writer, 12)
+			writer.write("}\n")
+			printSpace(writer, 12)
+			writer.write("continue;\n")
+			printSpace(writer, 8)
+			writer.write("}\n")
+				
+			# If the multi line comment is multiple characters, unget them if needed
+			if len(start) > 1:
+				for i in range(1, len(start)):
 					printSpace(writer, 8)
 					writer.write("reader.unget();\n")
 				

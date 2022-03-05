@@ -57,36 +57,59 @@ Token Scanner::getNext() {
             }
             continue;
         }
-        std::string __next = "";
-        __next += next;
-        __next += reader.get();
+        
+        std::string __next1 = "";
+        __next1 += next;
+        __next1 += reader.get();
         if (reader.eof()) {
             token.type = Eof;
             break;
         }
-        if (__next == "//") {
-            while (next != '\n' && !reader.eof()) {
-                next = reader.get();
-                rawBuffer += next;
+        if (__next1 == "/*") {
+            while (!reader.eof()) {
+                char __c = reader.get();
+                if (__c == '*' && reader.get() == '/' ) {
+                    break;
+                }
             }
             continue;
         }
         reader.unget();
-        __next = "";
-        __next += next;
-        __next += reader.get();
+        __next1 = "";
+        __next1 += next;
+        __next1 += reader.get();
         if (reader.eof()) {
             token.type = Eof;
             break;
         }
-        if (__next == "!!") {
-            while (next != '\n' && !reader.eof()) {
-                next = reader.get();
-                rawBuffer += next;
+        if (__next1 == "/+") {
+            while (!reader.eof()) {
+                char __c = reader.get();
+                if (__c == '.' ) {
+                    break;
+                }
             }
             continue;
         }
         reader.unget();
+        __next1 = "";
+        __next1 += next;
+        __next1 += reader.get();
+        if (reader.eof()) {
+            token.type = Eof;
+            break;
+        }
+        if (__next1 == "/-") {
+            while (!reader.eof()) {
+                char __c = reader.get();
+                if (__c == '-' && reader.get() == '-' && reader.get() == '-' && reader.get() == '/' ) {
+                    break;
+                }
+            }
+            continue;
+        }
+        reader.unget();
+        
         
         // TODO: This needs some kind of error handleing
         if (next == '\'') {

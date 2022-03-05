@@ -52,6 +52,9 @@ Token Scanner::getNext() {
         
         //##TOKEN COMMENT_LINE
         
+        //##TOKEN COMMENT_MULTI
+        
+        
         // TODO: This needs some kind of error handleing
         if (next == '\'') {
             char c = reader.get();

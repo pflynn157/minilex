@@ -1,0 +1,10 @@
+func
+ID(main)
+is
+var
+ID(y)
+=
+STR(Hello!)
+;
+end
+

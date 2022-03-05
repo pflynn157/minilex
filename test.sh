@@ -3,7 +3,7 @@
 # Params:
 # 1 -> test name
 function run_test() {
-    python3 lex.py "test/$1/$1.lex" ./base ./src
+    python3 minilex.py "test/$1/$1.lex" ./base ./src
     make
     ACTUAL_OUT=`build/lexer "test/$1/$1.tst"`
     EXPECTED_OUT=`cat "test/$1/$1.out"`
@@ -31,6 +31,7 @@ echo ""
 
 run_test "first"
 run_test "comments"
+run_test "cm"
 
 echo ""
 echo "Done!"
