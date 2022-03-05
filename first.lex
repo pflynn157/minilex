@@ -1,17 +1,20 @@
 
-"func" = Func
-"is" = Is
-"end" = End
-"var" = Var
-"return" = Return
+"html" = Html
+"head" = Head
+"body" = Body
+"title" = Title
+"div" = Div
 
-';' = SemiColon
-'=' = Assign
-':' = Colon
-':=' = Assign2
+"h1" = H1
+"h2" = H2
+"h3" = H3
+"h4" = H4
+"h5" = H5
+"h6" = H6
 
-@comment_line = #
-@comment_block = /* */
-@comment_block = /+ .
-@comment_block = /- ---/
+'<' = TagOpen
+'</' = CloseTagOpen
+'>' = TagClose
+
+@comment_block = <!-- -->
 

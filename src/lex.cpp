@@ -58,57 +58,36 @@ Token Scanner::getNext() {
             continue;
         }
         
-        std::string __next1 = "";
-        __next1 += next;
-        __next1 += reader.get();
-        if (reader.eof()) {
-            token.type = Eof;
-            break;
+        if (next == '/') {
+          if (reader.peek() == '*') {
+            reader.get();
+    while (!reader.eof()) {
+        char __c = reader.get();
+        if (__c == '*' && reader.get() == '/' ) break;
+    }
+    continue;
+          }
         }
-        if (__next1 == "/*") {
-            while (!reader.eof()) {
-                char __c = reader.get();
-                if (__c == '*' && reader.get() == '/' ) {
-                    break;
-                }
-            }
-            continue;
+        if (next == '/') {
+          if (reader.peek() == '+') {
+            reader.get();
+    while (!reader.eof()) {
+        char __c = reader.get();
+        if (__c == '.' ) break;
+    }
+    continue;
+          }
         }
-        reader.unget();
-        __next1 = "";
-        __next1 += next;
-        __next1 += reader.get();
-        if (reader.eof()) {
-            token.type = Eof;
-            break;
+        if (next == '/') {
+          if (reader.peek() == '-') {
+            reader.get();
+    while (!reader.eof()) {
+        char __c = reader.get();
+        if (__c == '-' && reader.get() == '-' && reader.get() == '-' && reader.get() == '/' ) break;
+    }
+    continue;
+          }
         }
-        if (__next1 == "/+") {
-            while (!reader.eof()) {
-                char __c = reader.get();
-                if (__c == '.' ) {
-                    break;
-                }
-            }
-            continue;
-        }
-        reader.unget();
-        __next1 = "";
-        __next1 += next;
-        __next1 += reader.get();
-        if (reader.eof()) {
-            token.type = Eof;
-            break;
-        }
-        if (__next1 == "/-") {
-            while (!reader.eof()) {
-                char __c = reader.get();
-                if (__c == '-' && reader.get() == '-' && reader.get() == '-' && reader.get() == '/' ) {
-                    break;
-                }
-            }
-            continue;
-        }
-        reader.unget();
         
         
         // TODO: This needs some kind of error handleing
