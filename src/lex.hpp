@@ -9,15 +9,13 @@ enum TokenType {
     EmptyToken,
     Eof,
     
-    Func,
-    Is,
-    End,
-    Var,
-    Return,
-    SemiColon,
-    Assign,
+    Mov,
+    Int,
+    Syscall,
+    Ret,
+    Comma,
     Colon,
-    Assign2,
+    Dot,
     
     // Literals
     Id,

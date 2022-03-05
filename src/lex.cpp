@@ -50,28 +50,13 @@ Token Scanner::getNext() {
         
         rawBuffer += next;
         
-        if (next == '#') {
+        if (next == ';') {
             while (next != '\n' && !reader.eof()) {
                 next = reader.get();
                 rawBuffer += next;
             }
             continue;
         }
-        std::string __next = "";
-        __next += next;
-        __next += reader.get();
-        if (reader.eof()) {
-            token.type = Eof;
-            break;
-        }
-        if (__next == "//") {
-            while (next != '\n' && !reader.eof()) {
-                next = reader.get();
-                rawBuffer += next;
-            }
-            continue;
-        }
-        reader.unget();
         
         
         
@@ -196,9 +181,9 @@ std::string Scanner::getRawBuffer() {
 bool Scanner::isSymbol(char c) {
     switch (c) {
         //case ';':
-        case ';': return true;
-        case '=': return true;
+        case ',': return true;
         case ':': return true;
+        case '.': return true;
         
         default: return false;
     }
@@ -207,27 +192,18 @@ bool Scanner::isSymbol(char c) {
 
 TokenType Scanner::getKeyword() {
     //if (buffer == "extern") return Extern;
-    if (buffer == "func") return Func;
-    else if (buffer == "is") return Is;
-    else if (buffer == "end") return End;
-    else if (buffer == "var") return Var;
-    else if (buffer == "return") return Return;
+    if (buffer == "mov") return Mov;
+    else if (buffer == "int") return Int;
+    else if (buffer == "syscall") return Syscall;
+    else if (buffer == "ret") return Ret;
     return EmptyToken;
 }
 
 TokenType Scanner::getSymbol(char c) {
     switch (c) {
-        case ';': return SemiColon;
-        case '=': return Assign;
-        case ':': {
-            char c2 = reader.get();
-            if (c2 == '=') {
-                return Assign2;
-            } else {
-                reader.unget();
-                return Colon;
-            }
-        }
+        case ',': return Comma;
+        case ':': return Colon;
+        case '.': return Dot;
         default: return EmptyToken;
     }
     return EmptyToken;

@@ -12,4 +12,3 @@
 
 @comment_line = #
 @comment_line = //
-@comment_block /* */
