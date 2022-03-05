@@ -3,6 +3,8 @@
 # Params:
 # 1 -> test name
 function run_test() {
+    echo "Test: $1"
+
     python3 minilex.py "test/$1/$1.lex" ./base ./src
     make
     ACTUAL_OUT=`build/lexer "test/$1/$1.tst"`
@@ -32,6 +34,8 @@ echo ""
 run_test "first"
 run_test "comments"
 run_test "cm"
+run_test "html"
+run_test "asm"
 
 echo ""
 echo "Done!"

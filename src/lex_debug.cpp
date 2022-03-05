@@ -7,15 +7,13 @@ void Token::print() {
         case EmptyToken: std::cout << "???" << std::endl; break;
         case Eof: std::cout << "EOF" << std::endl; break;
         
-        case Func: std::cout << "func" << std::endl; break;
-        case Is: std::cout << "is" << std::endl; break;
-        case End: std::cout << "end" << std::endl; break;
-        case Var: std::cout << "var" << std::endl; break;
-        case Return: std::cout << "return" << std::endl; break;
-        case SemiColon: std::cout << ";" << std::endl; break;
-        case Assign: std::cout << "=" << std::endl; break;
+        case Mov: std::cout << "mov" << std::endl; break;
+        case Int: std::cout << "int" << std::endl; break;
+        case Syscall: std::cout << "syscall" << std::endl; break;
+        case Ret: std::cout << "ret" << std::endl; break;
+        case Comma: std::cout << "," << std::endl; break;
         case Colon: std::cout << ":" << std::endl; break;
-        case Assign2: std::cout << ":=" << std::endl; break;
+        case Dot: std::cout << "." << std::endl; break;
         
         case Id: std::cout << "ID(" << id_val << ")" << std::endl; break;
         case String: std::cout << "STR(" << id_val << ")" << std::endl; break;
