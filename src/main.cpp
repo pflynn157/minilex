@@ -19,6 +19,8 @@ int main(int argc, char *argv[]) {
     }
     token = scanner->getNext();
     
+    delete scanner;
+    
     return 0;
 }
 
