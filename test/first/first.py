@@ -1,8 +1,3 @@
-##
-## This is an example of a user-generated configuration file for
-## simple-lex.
-##
-
 base_path = "./base"
 output_path = "./src"
 
@@ -21,4 +16,4 @@ symbols = [
 single_comments = [ "#", "//" ]
 
 # Define multi-line comments
-multi_comments = [ ("*/", "*/") ]
+multi_comments = []

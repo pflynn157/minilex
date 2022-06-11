@@ -1,35 +1,53 @@
 #!/bin/env python3
 import sys
 import os
+import os.path
 
-import config
+# Firgure out what to import
+config_file = "config"
+if len(sys.argv) >= 2:
+	config_file = sys.argv[1]
+	if '/' in config_file:
+		path = os.path.dirname(config_file)
+		name = os.path.basename(config_file)
+		config_file = name
+		sys.path.insert(0, path)
+	
+try:
+	config = __import__(config_file)
+except ImportError:
+	print("Error: Unable to import config module: " + str(config_file))
+	print("")
+	print("SimpleLex defaults to \"config\" unless a valid module is otherwise specified.")
+	print("")
+	exit(1)
 
 # Command line arguments
 base_path = config.base_path
 output_path = config.output_path
-input_file = ""
-
+#input_file = ""
+#
 # Prints the help text
-def help():
-	print("minilex - The simple lexical generator")
-	print("")
-	print("Usage: minilex FILE [output path] [base path]")
-	print("")
-	print("Defaults: minilex FILE ./base ./src")
-	print("")
+#def help():
+#	print("minilex - The simple lexical generator")
+#	print("")
+#	print("Usage: minilex FILE [output path] [base path]")
+#	print("")
+#	print("Defaults: minilex FILE ./base ./src")
+#	print("")
 
 # Check command line arguments
-if len(sys.argv) == 1:
-	print("Error: No input file!")
-	help()
-	exit(1)
+#if len(sys.argv) == 1:
+#	print("Error: No input file!")
+#	help()
+#	exit(1)
 	
-input_file = sys.argv[1]
+#input_file = sys.argv[1]
 
-if len(sys.argv) >= 3:
-	output_path = sys.argv[2]
-if len(sys.argv) >= 4:
-	base_path = sys.argv[3]
+#if len(sys.argv) >= 3:
+#	output_path = sys.argv[2]
+#if len(sys.argv) >= 4:
+#	base_path = sys.argv[3]
 
 # Init the needed maps
 keywords = dict()
@@ -50,45 +68,86 @@ def printSpace(writer, length):
 		writer.write(" ")
 
 # Parses the lines
-def parseLine(line):
-	lastAssign = 0
-	index = 0
-	for c in line:
-		if c == '=':
-			lastAssign = index
-		index += 1
+#def parseLine(line):
+	#lastAssign = 0
+	#index = 0
+	#for c in line:
+	#	if c == '=':
+	#		lastAssign = index
+	#	index += 1
 	
-	value = line[0:lastAssign].strip()
-	name = line[lastAssign+1:].strip()
+	#value = line[0:lastAssign].strip()
+	#name = line[lastAssign+1:].strip()
 	
-	cfirst = value[0]
-	clast = value[len(value)-1]
+	#cfirst = value[0]
+	#clast = value[len(value)-1]
 	
-	if cfirst == '\"' and clast == '\"':
-		value = value[1:-1]
-		keywords[value] = name
-	elif cfirst == '\'' and clast == '\'':
-		value = value[1:-1]
-		key = value[0]
+	#if cfirst == '\"' and clast == '\"':
+	#	value = value[1:-1]
+	#	keywords[value] = name
+	#if cfirst == '\'' and clast == '\'':
+	#	value = value[1:-1]
+	#	key = value[0]
+	#	if key in symbols:
+	#		symbols[key].append((value, name))
+	#	else:
+	#		symbols[key] = [(value, name)]
+	#if value == "@comment_line":
+	#	comments.append(name)
+	#elif value == "@comment_block":
+	#    name = name.split(" ")
+	#    start = name[0]
+	#    end = name[1]
+	#    multi_comments.append((start, end))
+
+# Read the file line by line
+#with open(input_file, "r") as reader:
+#	for line in reader.readlines():
+#		line = line.strip()
+#		if len(line) == 0:
+#			continue
+#		parseLine(line)
+		
+##
+## Process settings from config.py
+##
+# Keywords
+if hasattr(config, "keywords"):
+	for item in config.keywords:
+		keywords[item[0]] = item[1]
+else:
+	print("Error: Keyword definition not found in config.py")
+	exit(1)
+	
+# Symbols
+if hasattr(config, "symbols"):
+	for item in config.symbols:
+		name = item[1]
+		value = item[0]
+		key = value[0]		# This is the first character of the symbol sequence
 		if key in symbols:
 			symbols[key].append((value, name))
 		else:
 			symbols[key] = [(value, name)]
-	elif value == "@comment_line":
-		comments.append(name)
-	elif value == "@comment_block":
-	    name = name.split(" ")
-	    start = name[0]
-	    end = name[1]
-	    multi_comments.append((start, end))
+else:
+	print("Error: Symbols definition not found in config.py")
+	exit(1)
+	
+# Single-line comments
+if hasattr(config, "single_comments"):
+	comments = config.single_comments
+else:
+	print("Error: Single-line comments definition not found in config.py")
+	exit(1)
+	
+# Mutli-line comments
+if hasattr(config, "multi_comments"):
+	multi_comments = config.multi_comments
+else:
+	print("Error: Multi-line comments definition not found in config.py")
+	exit(1)
 
-# Read the file line by line
-with open(input_file, "r") as reader:
-	for line in reader.readlines():
-		line = line.strip()
-		if len(line) == 0:
-			continue
-		parseLine(line)
+# Multi-line comments
 		
 ##		
 ## Begin copying
@@ -313,4 +372,12 @@ for line in reader.readlines():
 
 reader.close()
 writer.close()
+
+##
+## Delete the imported configuration module
+##
+try:
+	del sys.modules[config_file]
+except AttributeError:
+	pass
 

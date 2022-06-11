@@ -5,7 +5,7 @@
 function run_test() {
     echo "Test: $1"
 
-    python3 minilex.py "test/$1/$1.lex" ./src ./base
+    python3 minilex.py "./test/$1/$1"
     make clean
     make
     ACTUAL_OUT=`build/lexer "test/$1/$1.tst"`
