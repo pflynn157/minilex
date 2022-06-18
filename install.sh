@@ -1,14 +1,17 @@
 #!/bin/bash
 
+if [[ -f /usr/bin/minilex ]] ; then
+    rm /usr/bin/minilex
+fi
+
+if [[ -d /usr/share/minilex ]] ; then
+    rm -rf /usr/share/minilex
+fi
+
 mkdir -p /usr/share/minilex/base
 
 cp base/* /usr/share/minilex/base
 cp minilex.py /usr/share/minilex
-
-cat >/usr/share/minilex/config.py <<EOL
-base_path = "/usr/share/minilex/base"
-output_path = "./src"
-EOL
 
 chmod 777 /usr/share/minilex/minilex.py
 

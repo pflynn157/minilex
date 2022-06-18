@@ -23,11 +23,13 @@ ID(int)
 :=
 INT(32)
 ;
+ID(x)
+!=
+ID(y)
+;
 return
 ID(z)
 ;
 end
 ;
-ID(!!)
-ID(Another)
-ID(comment)
+

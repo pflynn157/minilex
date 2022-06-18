@@ -23,31 +23,15 @@ except ImportError:
 	exit(1)
 
 # Command line arguments
-base_path = config.base_path
-output_path = config.output_path
-#input_file = ""
-#
-# Prints the help text
-#def help():
-#	print("minilex - The simple lexical generator")
-#	print("")
-#	print("Usage: minilex FILE [output path] [base path]")
-#	print("")
-#	print("Defaults: minilex FILE ./base ./src")
-#	print("")
+if hasattr(config, "base_path"):
+	base_path = config.base_path
+else:
+	base_path = "/usr/share/minilex/base"
 
-# Check command line arguments
-#if len(sys.argv) == 1:
-#	print("Error: No input file!")
-#	help()
-#	exit(1)
-	
-#input_file = sys.argv[1]
-
-#if len(sys.argv) >= 3:
-#	output_path = sys.argv[2]
-#if len(sys.argv) >= 4:
-#	base_path = sys.argv[3]
+if hasattr(config, "output_path"):
+	output_path = config.output_path
+else:
+	output_path = "./"
 
 # Init the needed maps
 keywords = dict()
@@ -66,48 +50,7 @@ multi_comments = list()
 def printSpace(writer, length):
 	for i in range(0, length):
 		writer.write(" ")
-
-# Parses the lines
-#def parseLine(line):
-	#lastAssign = 0
-	#index = 0
-	#for c in line:
-	#	if c == '=':
-	#		lastAssign = index
-	#	index += 1
 	
-	#value = line[0:lastAssign].strip()
-	#name = line[lastAssign+1:].strip()
-	
-	#cfirst = value[0]
-	#clast = value[len(value)-1]
-	
-	#if cfirst == '\"' and clast == '\"':
-	#	value = value[1:-1]
-	#	keywords[value] = name
-	#if cfirst == '\'' and clast == '\'':
-	#	value = value[1:-1]
-	#	key = value[0]
-	#	if key in symbols:
-	#		symbols[key].append((value, name))
-	#	else:
-	#		symbols[key] = [(value, name)]
-	#if value == "@comment_line":
-	#	comments.append(name)
-	#elif value == "@comment_block":
-	#    name = name.split(" ")
-	#    start = name[0]
-	#    end = name[1]
-	#    multi_comments.append((start, end))
-
-# Read the file line by line
-#with open(input_file, "r") as reader:
-#	for line in reader.readlines():
-#		line = line.strip()
-#		if len(line) == 0:
-#			continue
-#		parseLine(line)
-		
 ##
 ## Process settings from config.py
 ##
@@ -328,7 +271,7 @@ for line in reader.readlines():
 	elif line2 == "//##TOKEN SYMBOL":
 		for value, name_list in symbols.items():
 			printSpace(writer, 8)
-			if len(name_list) == 1:
+			if len(name_list) == 1 and len(name_list[0][0]) == 1:
 				writer.write("case \'" + value + "\': return " + name_list[0][1] + ";\n")
 			else:
 				writer.write("case \'" + value + "\': {\n")
@@ -350,23 +293,26 @@ for line in reader.readlines():
 					if found_first:
 						writer.write("} else ")
 					found_first = True
-					writer.write("if (c2 == \'" + symbol[1] + "\') {\n");
-					printSpace(writer, 16);
-					writer.write("return " + name + ";\n");
+					writer.write("if (c2 == \'" + symbol[1] + "\') {\n")
+					printSpace(writer, 16)
+					writer.write("rawBuffer += c2;\n")
+					printSpace(writer, 16)
+					writer.write("return " + name + ";\n")
 					
 				# Final else statement
 				printSpace(writer, 12)
 				writer.write("} else {\n")
 				printSpace(writer, 16)
 				writer.write("reader.unget();\n")
-				printSpace(writer, 16)
-				writer.write("return " + default_name + ";\n")
+				if default_name != None:
+					printSpace(writer, 16)
+					writer.write("return " + default_name + ";\n")
 				printSpace(writer, 12)
 				writer.write("}\n")
 				
-				# Closing brace of if statement
+				# Closing brace of break statement
 				printSpace(writer, 8)
-				writer.write("}\n")
+				writer.write("} break;\n")
 	else:
 		writer.write(line)
 

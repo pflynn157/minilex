@@ -14,7 +14,7 @@ keywords = [
 
 # Define the symbols
 symbols = [
-    (";", "SemiColon"), ("=", "Assign"), (":", "Colon"), (":=", "Assign2")
+    (";", "SemiColon"), ("=", "Assign"), (":", "Colon"), (":=", "Assign2"), ("!=", "NEQ")
 ]
 
 # Define single-line comments

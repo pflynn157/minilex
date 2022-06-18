@@ -1,3 +1,4 @@
+
 base_path = "./base"
 output_path = "./src"
 
@@ -9,11 +10,11 @@ keywords = [
 
 # Define the symbols
 symbols = [
-    (";", "SemiColon"), ("=", "Assign"), (":", "Colon"), (":=", "Assign2")
+    (";", "SemiColon"), ("=", "Assign"), (":", "Colon"), (":=", "Assign2"), ("!=", "NEQ")
 ]
 
 # Define single-line comments
 single_comments = [ "#", "//" ]
 
 # Define multi-line comments
-multi_comments = []
+multi_comments = [ ("*/", "*/") ]
