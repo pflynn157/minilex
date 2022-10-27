@@ -13,6 +13,7 @@ void Token::print() {
         case String: std::cout << "STR(" << id_val << ")" << std::endl; break;
         case CharL: std::cout << "CHAR(" << i8_val << ")" << std::endl; break;
         case Int32: std::cout << "INT(" << i32_val << ")" << std::endl; break;
+        case FloatL: std::cout << "FL(" << float_val << ")" << std::endl; break;
     }
 }
 

@@ -151,6 +151,9 @@ Token Scanner::getNext() {
             } else if (isHex()) {
                 token.type = Int32;
                 token.i32_val = std::stoi(buffer, 0, 16);
+            } else if (isFloat()) {
+                token.type = FloatL;
+                token.float_val = std::stod(buffer);
             } else {
                 token.type = Id;
                 token.id_val = buffer;
@@ -158,7 +161,7 @@ Token Scanner::getNext() {
             
             // Reset everything
             buffer = "";
-            break;
+            return token;
         } else {
             buffer += next;
         }
@@ -211,6 +214,20 @@ bool Scanner::isHex() {
     for (int i = 2; i<buffer.length(); i++) {
         if (!isxdigit(buffer[i])) return false;
     }
+    return true;
+}
+
+bool Scanner::isFloat() {
+    bool foundDot = false;
+    for (char c : buffer) {
+        if (c == '.') {
+            if (foundDot) return false;
+            foundDot = true;
+        } else if (!isdigit(c)) {
+            return false;
+        }
+    }
+    if (!foundDot) return false;
     return true;
 }
 

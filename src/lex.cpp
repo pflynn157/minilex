@@ -50,14 +50,39 @@ Token Scanner::getNext() {
         
         rawBuffer += next;
         
-        if (next == ';') {
+        if (next == '#') {
             while (next != '\n' && !reader.eof()) {
                 next = reader.get();
                 rawBuffer += next;
             }
             continue;
         }
+        std::string __next = "";
+        __next += next;
+        __next += reader.get();
+        if (reader.eof()) {
+            token.type = Eof;
+            break;
+        }
+        if (__next == "//") {
+            while (next != '\n' && !reader.eof()) {
+                next = reader.get();
+                rawBuffer += next;
+            }
+            continue;
+        }
+        reader.unget();
         
+        if (next == '*') {
+          if (reader.peek() == '/') {
+            reader.get();
+    while (!reader.eof()) {
+        char __c = reader.get();
+        if (__c == '*' && reader.get() == '/' ) break;
+    }
+    continue;
+          }
+        }
         
         
         // TODO: This needs some kind of error handleing
@@ -156,6 +181,9 @@ Token Scanner::getNext() {
             } else if (isHex()) {
                 token.type = Int32;
                 token.i32_val = std::stoi(buffer, 0, 16);
+            } else if (isFloat()) {
+                token.type = FloatL;
+                token.float_val = std::stod(buffer);
             } else {
                 token.type = Id;
                 token.id_val = buffer;
@@ -163,7 +191,7 @@ Token Scanner::getNext() {
             
             // Reset everything
             buffer = "";
-            break;
+            return token;
         } else {
             buffer += next;
         }
@@ -181,9 +209,10 @@ std::string Scanner::getRawBuffer() {
 bool Scanner::isSymbol(char c) {
     switch (c) {
         //case ';':
-        case ',': return true;
+        case ';': return true;
+        case '=': return true;
         case ':': return true;
-        case '.': return true;
+        case '!': return true;
         
         default: return false;
     }
@@ -192,18 +221,37 @@ bool Scanner::isSymbol(char c) {
 
 TokenType Scanner::getKeyword() {
     //if (buffer == "extern") return Extern;
-    if (buffer == "mov") return Mov;
-    else if (buffer == "int") return Int;
-    else if (buffer == "syscall") return Syscall;
-    else if (buffer == "ret") return Ret;
+    if (buffer == "func") return Func;
+    else if (buffer == "is") return Is;
+    else if (buffer == "end") return End;
+    else if (buffer == "var") return Var;
+    else if (buffer == "return") return Return;
     return EmptyToken;
 }
 
 TokenType Scanner::getSymbol(char c) {
     switch (c) {
-        case ',': return Comma;
-        case ':': return Colon;
-        case '.': return Dot;
+        case ';': return SemiColon;
+        case '=': return Assign;
+        case ':': {
+            char c2 = reader.get();
+            if (c2 == '=') {
+                rawBuffer += c2;
+                return Assign2;
+            } else {
+                reader.unget();
+                return Colon;
+            }
+        } break;
+        case '!': {
+            char c2 = reader.get();
+            if (c2 == '=') {
+                rawBuffer += c2;
+                return NEQ;
+            } else {
+                reader.unget();
+            }
+        } break;
         default: return EmptyToken;
     }
     return EmptyToken;
@@ -223,6 +271,20 @@ bool Scanner::isHex() {
     for (int i = 2; i<buffer.length(); i++) {
         if (!isxdigit(buffer[i])) return false;
     }
+    return true;
+}
+
+bool Scanner::isFloat() {
+    bool foundDot = false;
+    for (char c : buffer) {
+        if (c == '.') {
+            if (foundDot) return false;
+            foundDot = true;
+        } else if (!isdigit(c)) {
+            return false;
+        }
+    }
+    if (!foundDot) return false;
     return true;
 }
 

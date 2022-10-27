@@ -6,6 +6,7 @@ func main is
     var xx : int := 32;
     x != y;
     return z;
+    var f = 3.14;
     
     # This is a comment
 end

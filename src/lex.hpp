@@ -9,19 +9,23 @@ enum TokenType {
     EmptyToken,
     Eof,
     
-    Mov,
-    Int,
-    Syscall,
-    Ret,
-    Comma,
+    Func,
+    Is,
+    End,
+    Var,
+    Return,
+    SemiColon,
+    Assign,
     Colon,
-    Dot,
+    Assign2,
+    NEQ,
     
     // Literals
     Id,
     String,
     CharL,
-    Int32
+    Int32,
+    FloatL
 };
 
 struct Token {
@@ -29,6 +33,7 @@ struct Token {
     std::string id_val;
     char i8_val;
     int i32_val;
+    double float_val = 0;
     
     Token();
     void print();
@@ -66,5 +71,6 @@ private:
     TokenType getSymbol(char c);
     bool isInt();
     bool isHex();
+    bool isFloat();
 };
 
